@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Swish</title>
+  <link rel="stylesheet" href="styles.css" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b141e">
+  <link rel="shortcut icon" href="assets/swish.png" >
+  <link rel="manifest" href="/manifest.json">
+
+</head>
+<body>
+  <div class="phone">
+    <div class="top-section" id="topSection">
+      <canvas id="particleCanvas"></canvas>
+      <div class="checkmark-circle">
+        <img src="assets/check.png" alt="">
+      </div>
+      <p class="success-text">Din betalning är skickad!</p>
+    </div>
+
+    <div class="bottom-section">
+      <p class="date-time" id="dateTime"></p>
+
+      <div class="recipient-block">
+        <p class="recipient-name" id="recipientName"></p>
+        <p class="recipient-org" id="recipientOrg"></p>
+        <p class="recipient-number" id="recipientNumber"></p>
+      </div>
+
+      <p class="amount" id="amount"></p>
+
+      <div class="divider"></div>
+
+      <div class="reference-row">
+        <span class="ref-label">Referens</span>
+        <span class="ref-value" id="reference"></span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="footer">
+        <div class="swish-logo">
+          <img src="assets/swish-big.png" alt="Swish" class="swish-img" />
+        </div>
+        <button class="close-btn" onclick="window.location.href='index.html'">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    const section = document.getElementById('topSection');
+
+    let W, H;
+
+    function resize() {
+      const rect = section.getBoundingClientRect();
+      W = canvas.width = rect.width;
+      H = canvas.height = rect.height + 60;
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    const AMBIENT_COUNT = 30;
+    const FIREWORK_COUNT = 50;
+    const FIREWORK_SPEED = 6;
+    const FIREWORK_LIFETIME = 55;
+
+    let ambient = [];
+    let fireworks = [];
+
+    function randomAmbient() {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * (H - 60),
+        r: Math.random() * 2.2 + 0.6,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        alpha: Math.random() * 0.45 + 0.1
+      };
+    }
+
+    function initAmbient() {
+      ambient = Array.from({ length: AMBIENT_COUNT }, randomAmbient);
+    }
+
+    initAmbient();
+
+    function spawnFirework(x, y) {
+      for (let i = 0; i < FIREWORK_COUNT; i++) {
+        const angle = (Math.PI * 2 / FIREWORK_COUNT) * i + Math.random() * 0.4;
+        const speed = Math.random() * FIREWORK_SPEED + 1.5;
+
+        fireworks.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          r: Math.random() * 3 + 1.5,
+          life: FIREWORK_LIFETIME,
+          maxLife: FIREWORK_LIFETIME,
+          gravity: 0.12
+        });
+      }
+    }
+
+    let audioCtx;
+    let pingBuffer;
+
+    async function loadPing() {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const response = await fetch('assets/ping.mp3');
+      const arrayBuffer = await response.arrayBuffer();
+      pingBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    loadPing();
+
+    function playPing(xPosition) {
+      if (!pingBuffer) return;
+
+      const source = audioCtx.createBufferSource();
+      source.buffer = pingBuffer;
+
+      const pitch = 1.5 - (xPosition / W) * 0.75;
+      source.playbackRate.value = pitch;
+
+      source.connect(audioCtx.destination);
+      source.start();
+    }
+
+    section.addEventListener('click', (e) => {
+      const rect = section.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+
+      spawnFirework(x, e.clientY - rect.top);
+      playPing(x);
+    });
+
+    function tick() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (const p of ambient) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < -4) p.x = W + 4;
+        if (p.x > W + 4) p.x = -4;
+        if (p.y < -4) p.y = H + 4;
+        if (p.y > H + 4) p.y = -4;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${p.alpha})`;
+        ctx.fill();
+      }
+
+      fireworks = fireworks.filter(p => p.life > 0);
+
+      for (const p of fireworks) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += p.gravity;
+        p.vx *= 0.97;
+        p.life--;
+
+        const alpha = p.life / p.maxLife;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r * alpha, 0, Math.PI * 2);
+        ctx.fillStyle = "#ffffff";
+        ctx.globalAlpha = alpha;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    tick();
+
+    function formatSwedishDateTime() {
+      const now = new Date();
+
+      const months = [
+        "jan.", "feb.", "mars", "apr.", "maj", "juni",
+        "juli", "aug.", "sep.", "okt.", "nov.", "dec."
+      ];
+
+      const day = now.getDate();
+      const month = months[now.getMonth()];
+      const year = now.getFullYear();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+
+      return `${day} ${month} ${year}, kl ${hours}:${minutes}`;
+    }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const storedData = JSON.parse(localStorage.getItem("swishData"));
+    if (!storedData) return;
+
+    document.getElementById("dateTime").textContent = storedData.time;
+    document.getElementById("recipientName").textContent = storedData.name;
+    document.getElementById("recipientNumber").textContent = storedData.number;
+    document.getElementById("amount").textContent = storedData.amount + " kr";
+
+    if (storedData.isCompany) {
+      document.getElementById("recipientOrg").textContent = storedData.org;
+      document.getElementById("reference").textContent = storedData.reference;
+    } else {
+      document.getElementById("recipientOrg").remove();
+      document.querySelector(".reference-row").remove();
+      document.querySelectorAll(".divider")[1].remove();
+       document.querySelectorAll(".divider")[0].remove();
+    }
+  });
+  </script>
+</body>
+</html>

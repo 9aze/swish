@@ -1,0 +1,19 @@
+{
+  "name": "Swish",
+  "short_name": "Swish",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "/assets/swish.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/swish.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
