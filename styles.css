@@ -159,7 +159,7 @@ body {
 
 .divider {
   height: 1px;
-  background: #1e1e2a;
+  background: #27334c;
   margin-bottom: 14px;
 }
 
@@ -169,7 +169,6 @@ body {
   align-items: center;
   padding-bottom: 14px;
   gap: 10px;
-  color: #27334c;
 }
 
 .ref-label {
