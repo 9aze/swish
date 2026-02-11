@@ -64,18 +64,19 @@ function resize() {
   W = rect.width;
   H = rect.height;
 
-  // Set canvas width/height in actual pixels
-  canvas.width = W * deviceRatio;
-  canvas.height = H * deviceRatio;
+  // Set canvas in actual pixels for high-DPI screens
+  canvas.width = W * devicePixelRatio;
+  canvas.height = H * devicePixelRatio;
 
-  // Set canvas CSS size
+  // Keep CSS size exactly like top-section
   canvas.style.width = W + 'px';
   canvas.style.height = H + 'px';
 
-  // Scale drawing context to account for devicePixelRatio
-  ctx.setTransform(1, 0, 0, 1, 0, 0); // reset
-  ctx.scale(deviceRatio, deviceRatio);
+  // Scale drawing context
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.scale(devicePixelRatio, devicePixelRatio);
 }
+
 
 resize();
 window.addEventListener('resize', () => {
