@@ -38,7 +38,6 @@ body {
   display: flex;
   flex-direction: column;
 
-  padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
@@ -46,7 +45,7 @@ body {
 
 .top-section {
   flex: 0 0 50%;
-  min-height: 320px;
+  min-height: calc(50% + env(safe-area-inset-top));
 
   background: linear-gradient(
     135deg,
