@@ -108,7 +108,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* don’t push footer down with space */
-  padding: 20px 24px calc(16px + env(safe-area-inset-bottom)); /* reduce bottom padding */
+  padding: 20px 24px 16px; /* reduce bottom padding */
 }
 
 .date-time {
