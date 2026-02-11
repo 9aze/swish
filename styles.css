@@ -192,13 +192,13 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 30px;
+  padding-top: 20px;
   margin-top: auto;
   position: relative;
 }
 
 .swish-img {
-  height: 40px;
+  height: 20px;
   width: auto;
 }
 
