@@ -45,7 +45,7 @@ body {
 
 .top-section {
   flex: 0 0 50%;
-  min-height: calc(50% + env(safe-area-inset-top));
+  min-height: 350px;
 
   background: linear-gradient(
     135deg,
