@@ -40,10 +40,9 @@ body {
 }
 
 /* TOP SECTION */
-
 .top-section {
-  flex: 0 0 50%;
-  min-height: 370px;
+  flex: 1 1 auto; /* Grow to fill remaining space */
+  min-height: 0;  /* Allow flex to shrink if bottom is taller */
 
   background: linear-gradient(
     135deg,
@@ -103,10 +102,10 @@ body {
 
 /* BOTTOM SECTION */
 
+/* BOTTOM SECTION */
 .bottom-section {
-  flex: 1;
+  flex: 0 0 auto; /* Take only the space it needs */
   background: #0b141e;
-
   padding: 20px 24px calc(32px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
