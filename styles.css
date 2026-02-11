@@ -128,7 +128,7 @@ body {
 .recipient-name {
   color: #ffffff;
   font-family: 'MuseoSansRounded-light';
-  font-size: clamp(26px, 5vw, 26px);
+  font-size: clamp(24px, 5vw, 26px);
   letter-spacing: -0.3px;
 }
 
@@ -136,7 +136,6 @@ body {
   color: #ffffff;
   font-family: 'MuseoSansRounded-light';
   font-size: clamp(17px, 3.5vw, 17px);
-  letter-spacing: 0.8px;
   text-transform: uppercase;
   margin-bottom: 4px;
 }
@@ -150,7 +149,7 @@ body {
 
 .amount {
   color: #ffffff;
-  font-size: clamp(43px, 9vw, 48px);
+  font-size: clamp(40px, 9vw, 48px);
   text-align: center;
   margin-top: 5px;
   letter-spacing: -1px;
