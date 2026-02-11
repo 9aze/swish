@@ -34,7 +34,7 @@ body {
 
 .phone {
   width: 100%;
-  min-height: 100dvh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -109,7 +109,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start; /* don’t push footer down with space */
-  padding: 20px 24px 16px; /* reduce bottom padding */
+  padding: 20px 24px 0px; /* reduce bottom padding */
 }
 
 .date-time {
@@ -198,8 +198,9 @@ body {
 }
 
 .swish-img {
-  height: 20px;
+  height: 30px;
   width: auto;
+  position: relative;
 }
 
 .close-btn {
